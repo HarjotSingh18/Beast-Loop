@@ -5,24 +5,24 @@ from Player import *
 from EnemyDrops import *
 
 #! Enemies 
-mushroom = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/enemies/mushroom/run/run_1.png"), (80, 80))
+mushroom = pygame.transform.smoothscale(pygame.image.load("images/enemies/mushroom/run/run_1.png"), (80, 80))
 mushroom_rect = mushroom.get_rect(topleft = [950, 460])
 mushroom_mask = pygame.mask.from_surface(mushroom)
 
-boar = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/enemies/boar/run/run_1.png"), (80, 80))
+boar = pygame.transform.smoothscale(pygame.image.load("images/enemies/boar/run/run_1.png"), (80, 80))
 boar_rect = mushroom.get_rect(topleft = [950, 465])
 boar_mask = pygame.mask.from_surface(mushroom)
 
-bat = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/enemies/dragon/flying/fly_1.png"), (40,40))
+bat = pygame.transform.smoothscale(pygame.image.load("images/enemies/dragon/flying/fly_1.png"), (40,40))
 bat_rect = bat.get_rect(topleft = [950, 300])
 bat_mask = pygame.mask.from_surface(bat)
 
-orc_boss = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/enemies/orc_boss/run/run_1.png"), (80,80))
+orc_boss = pygame.transform.smoothscale(pygame.image.load("images/enemies/orc_boss/run/run_1.png"), (80,80))
 orc_rect = orc_boss.get_rect(topleft = [950, 420])
 orc_mask = pygame.mask.from_surface(orc_boss)
 
 #! Enemies Drops 
-coin_drop = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/GUI/coins/coin_1.png"), (80, 80))
+coin_drop = pygame.transform.smoothscale(pygame.image.load("images/GUI/coins/coin_1.png"), (80, 80))
 coin_drop_rect = coin_drop.get_rect(topleft = [0,0])
 coin_drop_mask = pygame.mask.from_surface(coin_drop)
 
@@ -125,7 +125,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.health <= 0:
                     death_sound.play()
                     self.state = "dead"
-                    coin_animaton = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/GUI/coins/coin_{i}.png"), (40, 40)) for i in range(1, 6)]
+                    coin_animaton = [pygame.transform.scale(pygame.image.load(f"images/GUI/coins/coin_{i}.png"), (40, 40)) for i in range(1, 6)]
                     drop = EnemyDrop(self.rect.x, self.rect.y, coin_animaton, self.coin_val)
                     drop_group.add(drop)
                 else:
@@ -134,24 +134,24 @@ class Enemy(pygame.sprite.Sprite):
 # All enemies 
 class Mushroom(Enemy):
     def __init__(self, x, y, health):
-        run_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/mushroom/run/run_{i}.png"), (70, 70)) for i in range(1, 9)]
-        hit_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/mushroom/hit/hit_{i}.png"), (70, 70)) for i in range(1, 5)]
+        run_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/run/run_{i}.png"), (70, 70)) for i in range(1, 9)]
+        hit_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/hit/hit_{i}.png"), (70, 70)) for i in range(1, 5)]
         #! using death animation for the dragon because it looks nicer
-        death_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/mushroom/death/die_{i}.png"), (70,70)) for i in range(1,6)]
+        death_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/death/die_{i}.png"), (70,70)) for i in range(1,6)]
         self.coin_drop = 1
         super().__init__(x, y, health, run_animation, hit_animation, death_animation, None, 2, self.coin_drop)
 
 class Boar(Enemy):
     def __init__(self, x, y, health):
-        run_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/boar/run/run_{i}.png"), (70, 60)) for i in range(1, 4)]
-        death_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/boar/death/dead_{i}.png"), (60, 60)) for i in range(1, 10)]
+        run_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/boar/run/run_{i}.png"), (70, 60)) for i in range(1, 4)]
+        death_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/boar/death/dead_{i}.png"), (60, 60)) for i in range(1, 10)]
         self.coin_drop = 2      
         super().__init__(x, y, health, run_animation, None, death_animation, None, 2, self.coin_drop)
 
 class Dragon(Enemy):
     def __init__(self, x, y, health):
-        run_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/dragon/flying/fly_{i}.png"), (100, 100)) for i in range(1, 10)]
-        death_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/dragon/death/dead_{i}.png"), (100,100)) for i in range(1,6)]
+        run_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/dragon/flying/fly_{i}.png"), (100, 100)) for i in range(1, 10)]
+        death_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/dragon/death/dead_{i}.png"), (100,100)) for i in range(1,6)]
         self.coin_drop = 3     
         super().__init__(x, y, health, run_animation, None, death_animation, None, 2, self.coin_drop)
 
@@ -163,8 +163,8 @@ class Dragon(Enemy):
 
 class Orc(Enemy):
     def __init__(self, x, y, health):
-        run_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/orc_boss/run/run_{i}.png"), (150, 150)) for i in range(1, 9)]
-        hit_animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/enemies/orc_boss/hit/hit_{i}.png"), (150, 150)) for i in range(1, 4)]
+        run_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/orc_boss/run/run_{i}.png"), (150, 150)) for i in range(1, 9)]
+        hit_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/orc_boss/hit/hit_{i}.png"), (150, 150)) for i in range(1, 4)]
         self.coin_drop = 5
         super().__init__(x, y, health, run_animation, hit_animation, None, None, 1, self.coin_drop)  # Slower but more powerful boss
 

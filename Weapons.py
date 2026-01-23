@@ -2,11 +2,11 @@ import pygame
 import math
 
 #! Weapon Images 
-staff = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/weapons/Pistol-3.png"), (30, 30))
+staff = pygame.transform.smoothscale(pygame.image.load("images/weapons/Pistol-3.png"), (30, 30))
 staff_rect = staff.get_rect(topleft = [70, 390])
 staff_mask = pygame.mask.from_surface(staff)
 
-bullet_1 = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/weapons/simple_bullet.png"), (10, 10))
+bullet_1 = pygame.transform.smoothscale(pygame.image.load("images/weapons/simple_bullet.png"), (10, 10))
 bullet_1_rect = staff.get_rect(topleft = [0,0])
 bullet_1_mask = pygame.mask.from_surface(bullet_1)
 BULLET_VEL = 2
@@ -15,7 +15,7 @@ class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y, damage):
         super().__init__()
         self.images = []
-        BULLET_1 = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/weapons/Bullet_Wizzart_C.png"), (55, 55))
+        BULLET_1 = pygame.transform.smoothscale(pygame.image.load("images/weapons/Bullet_Wizzart_C.png"), (55, 55))
         self.images.append(BULLET_1)
         self.index = 0
         self.image = self.images[self.index]

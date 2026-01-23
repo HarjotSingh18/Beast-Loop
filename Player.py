@@ -7,16 +7,16 @@ from Weapons import *
 pygame.mixer.init()
 
 #! Player
-PS = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/player/wiz_1.png"), (80, 80))
+PS = pygame.transform.smoothscale(pygame.image.load("images/player/wiz_1.png"), (80, 80))
 PS_RECT = PS.get_rect(topleft = [90, 400])
 PS_MASK = pygame.mask.from_surface(PS)
 
-hit_sound = pygame.mixer.Sound("loopgame.py/sound/hurt_sound.mp3")
+hit_sound = pygame.mixer.Sound("sound/hurt_sound.mp3")
 hit_sound.set_volume(0.1)
 
-death_sound = pygame.mixer.Sound("loopgame.py/sound/death_sound.mp3")
+death_sound = pygame.mixer.Sound("sound/death_sound.mp3")
 death_sound.set_volume(0.5)
-gun_sound = pygame.mixer.Sound("loopgame.py/sound/Wizard_Sound.mp3")
+gun_sound = pygame.mixer.Sound("sound/Wizard_Sound.mp3")
 gun_sound.set_volume(15)
 
 class Player(pygame.sprite.Sprite):
@@ -30,12 +30,12 @@ class Player(pygame.sprite.Sprite):
         self.dead = []
         self.health_width = health_width
         #* Player Animations
-        img = pygame.image.load(f"loopgame.py/images/player/wiz_1.png")
+        img = pygame.image.load(f"images/player/wiz_1.png")
         img = pygame.transform.scale(img, (180, 180))
         self.idle.append(img)
     
         for num in range(1, 12):
-            img = pygame.image.load(f"loopgame.py/images/player/wiz_{num}.png")
+            img = pygame.image.load(f"images/player/wiz_{num}.png")
             img = pygame.transform.scale(img, (180, 180))
             self.hit.append(img)
 

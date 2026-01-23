@@ -17,42 +17,42 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Time Loop Defence")
 
 #! Menu 
-menu_1 = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Menu_board.png"), (200 * 1.5, HEIGHT//2 * 1.5))
-insturction = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Instruction_menu.png"), (200 * 1.5, HEIGHT//2 * 1.5))
+menu_1 = pygame.transform.smoothscale(pygame.image.load("images/menu/Menu_board.png"), (200 * 1.5, HEIGHT//2 * 1.5))
+insturction = pygame.transform.smoothscale(pygame.image.load("images/menu/Instruction_menu.png"), (200 * 1.5, HEIGHT//2 * 1.5))
 
-play_button = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Play_Button.png"), (100, 70))
+play_button = pygame.transform.smoothscale(pygame.image.load("images/menu/Play_Button.png"), (100, 70))
 play_rect = play_button.get_rect(topleft = [250,100])
 
-quit_button = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Quit_Button.png"), (100, 70))
+quit_button = pygame.transform.smoothscale(pygame.image.load("images/menu/Quit_Button.png"), (100, 70))
 quit_rect = quit_button.get_rect(topleft = [400,100])
 
-help_button = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Help_Button.png"), (100, 70))
+help_button = pygame.transform.smoothscale(pygame.image.load("images/menu/Help_Button.png"), (100, 70))
 help_rect = help_button.get_rect(topleft = [550,100])
 
-back_button = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/menu/Back_Button.png"), (80, 50))
+back_button = pygame.transform.smoothscale(pygame.image.load("images/menu/Back_Button.png"), (80, 50))
 back_rect = back_button.get_rect(topleft = [435, 370])
 
 #! Player GUI
 health_x = 80
 health_y = 10
 
-health_gui = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/GUI/health_bar.png"), (health_x, health_y))
+health_gui = pygame.transform.smoothscale(pygame.image.load("images/GUI/health_bar.png"), (health_x, health_y))
 health_rect = health_gui.get_rect(topleft = [60, 390])
-  
-coin_Bar = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/GUI/coin_gui.png"), (200, 70))
+
+coin_Bar = pygame.transform.smoothscale(pygame.image.load("images/GUI/coin_gui.png"), (200, 70))
 coin_Bar_rect = coin_Bar.get_rect(topleft = [0, 30])
 
 my_font = pygame.font.SysFont('Comic Sans MS', 15)
 coins_font = pygame.font.SysFont('Comic Sans MS', 35)
 
-power_upgrade = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/player/upgrades/power.png"), (28, 30))
+power_upgrade = pygame.transform.smoothscale(pygame.image.load("images/player/upgrades/power.png"), (28, 30))
 power_rect = power_upgrade.get_rect(topleft = [10, 110])
 
-health_upgrade = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/player/upgrades/health_plus.png"), (30, 30))
+health_upgrade = pygame.transform.smoothscale(pygame.image.load("images/player/upgrades/health_plus.png"), (30, 30))
 health_rect = health_upgrade.get_rect(topleft = [10, 150])
 
 #! Location 1 
-Location_1 = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/location/background.png"), (WIDTH, HEIGHT)) 
+Location_1 = pygame.transform.smoothscale(pygame.image.load("images/location/background.png"), (WIDTH, HEIGHT)) 
 
 #! Fps Attributes
 clock = pygame.time.Clock()
@@ -60,7 +60,7 @@ fps = 60
 
 #! Sounds
 pygame.mixer.init()
-background_music = pygame.mixer.Sound("loopgame.py/sound/background music.mp3")
+background_music = pygame.mixer.Sound("sound/background music.mp3")
 background_music.set_volume(0.5)
 background_music.play(-1)
 
@@ -108,7 +108,7 @@ leaf_spawn_rate = 1.5  # Spawn new leaves every 1.5 seconds
 last_leaf_time = time.time()
 
 def draw_health_bar(player):
-    health_gui = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/GUI/health_bar.png"), (player.health_bar_width, 10))
+    health_gui = pygame.transform.smoothscale(pygame.image.load("images/GUI/health_bar.png"), (player.health_bar_width, 10))
     health_rect = health_gui.get_rect(topleft=[20, 390])
     WIN.blit(health_gui, health_rect)
 
@@ -122,8 +122,7 @@ def draw_leaves():
     # Spawn rate check for the leaves
     if time.time() - last_leaf_time > leaf_spawn_rate:
         x = random.randint(0, WIDTH)
-        
-        leaves = Leaves(x, 0, [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/location/leaves/lf_{i}.png"), (10, 10)) for i in range(1, 6)])
+        leaves = Leaves(x, 0, [pygame.transform.scale(pygame.image.load(f"images/location/leaves/lf_{i}.png"), (10, 10)) for i in range(1, 6)])
         leaves_group.add(leaves)
         last_leaf_time = time.time()  # Reset the last leaf spawn time
 
@@ -176,6 +175,16 @@ def draw(fps_text):
 
 
 def main():
+    player_group.empty()
+    mushroom_group.empty()
+    boar_group.empty()
+    dragon_group.empty()
+    orc_group.empty()
+    coin_group.empty()
+    drop_group.empty()
+    bullet_group.empty()
+    leaves_group.empty()
+    smoke_group.empty()
     run = True
     last_bullet_time = time.time()
     fire_Rate = 0.3

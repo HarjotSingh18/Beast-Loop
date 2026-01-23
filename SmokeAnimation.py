@@ -1,6 +1,6 @@
 import pygame
 
-smk_img = pygame.transform.smoothscale(pygame.image.load("loopgame.py/images/location/smoke/smk_1.png"), (80,80))
+smk_img = pygame.transform.smoothscale(pygame.image.load("images/location/smoke/smk_1.png"), (80,80))
 smk_rect = smk_img.get_rect(topleft = [0,0])
 
 
@@ -9,7 +9,7 @@ class Smoke(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.smk_Animation = [pygame.transform.scale(pygame.image.load(f"loopgame.py/images/location/smoke/smk_{i}.png"), (80,80)) for i in range(1, 7)]
+        self.smk_Animation = [pygame.transform.scale(pygame.image.load(f"images/location/smoke/smk_{i}.png"), (80,80)) for i in range(1, 7)]
         self.smk_index = 0
         self.smk_counter = 0
         x,y = 370, 142
