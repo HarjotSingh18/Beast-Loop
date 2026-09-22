@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 import time
+import sys
 
 from Enemies import *
 from SmokeAnimation import *
@@ -36,8 +37,7 @@ back_rect = back_button.get_rect(topleft = [435, 370])
 health_x = 80
 health_y = 10
 
-health_gui = pygame.transform.smoothscale(pygame.image.load("images/GUI/health_bar.png"), (health_x, health_y))
-health_rect = health_gui.get_rect(topleft = [60, 390])
+health_bar_img = pygame.image.load("images/GUI/health_bar.png")
 
 coin_Bar = pygame.transform.smoothscale(pygame.image.load("images/GUI/coin_gui.png"), (200, 70))
 coin_Bar_rect = coin_Bar.get_rect(topleft = [0, 30])
@@ -49,7 +49,7 @@ power_upgrade = pygame.transform.smoothscale(pygame.image.load("images/player/up
 power_rect = power_upgrade.get_rect(topleft = [10, 110])
 
 health_upgrade = pygame.transform.smoothscale(pygame.image.load("images/player/upgrades/health_plus.png"), (30, 30))
-health_rect = health_upgrade.get_rect(topleft = [10, 150])
+health_upgrade_rect = health_upgrade.get_rect(topleft = [10, 150])
 
 #! Location 1 
 Location_1 = pygame.transform.smoothscale(pygame.image.load("images/location/background.png"), (WIDTH, HEIGHT)) 
@@ -104,11 +104,12 @@ def spawn_enemies(last_spawn, spawn_rate, enemy_tracker, enemies):
 
     return last_spawn, enemies
 
+leaf_animation = [pygame.transform.scale(pygame.image.load(f"images/location/leaves/lf_{i}.png"), (10, 10)) for i in range(1, 6)]
 leaf_spawn_rate = 1.5  # Spawn new leaves every 1.5 seconds
 last_leaf_time = time.time()
 
 def draw_health_bar(player):
-    health_gui = pygame.transform.smoothscale(pygame.image.load("images/GUI/health_bar.png"), (player.health_bar_width, 10))
+    health_gui = pygame.transform.smoothscale(health_bar_img, (player.health_bar_width, health_y))
     health_rect = health_gui.get_rect(topleft=[20, 390])
     WIN.blit(health_gui, health_rect)
 
@@ -122,7 +123,7 @@ def draw_leaves():
     # Spawn rate check for the leaves
     if time.time() - last_leaf_time > leaf_spawn_rate:
         x = random.randint(0, WIDTH)
-        leaves = Leaves(x, 0, [pygame.transform.scale(pygame.image.load(f"images/location/leaves/lf_{i}.png"), (10, 10)) for i in range(1, 6)])
+        leaves = Leaves(x, 0, leaf_animation)
         leaves_group.add(leaves)
         last_leaf_time = time.time()  # Reset the last leaf spawn time
 
@@ -151,7 +152,7 @@ def draw_others():
 
 def draw_upgrades():
     WIN.blit(power_upgrade, power_rect)
-    WIN.blit(health_upgrade, health_rect)
+    WIN.blit(health_upgrade, health_upgrade_rect)
 
 def draw(fps_text):
     player = list(player_group)[0]  # Assuming only one player
@@ -170,9 +171,6 @@ def draw(fps_text):
     # Draw FPS
     WIN.blit(fps_text, (10, 10))
 
-    # Update display
-    pygame.display.update()
-
 
 def main():
     player_group.empty()
@@ -185,6 +183,7 @@ def main():
     bullet_group.empty()
     leaves_group.empty()
     smoke_group.empty()
+    smoke_group.add(smoke)  # The smoke sprite is created once on import, so re-add it after clearing
     run = True
     last_bullet_time = time.time()
     fire_Rate = 0.3
@@ -213,8 +212,7 @@ def main():
 
         for event in pygame.event.get():        
             if event.type == pygame.QUIT:
-                run = False
-                break
+                quit_game()
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0] and time.time() - last_bullet_time > fire_Rate:
@@ -234,60 +232,65 @@ def main():
                 #! Change it so that once wave ends, it goes into an upgrade function where 
                 #! the player can spend there coins.
                 print("No more enemies. Game over!")
-                run = False 
-                menu()
+                return
             else:
                 print(f"New wave has {len(enemies)} enemies")
                 
         last_spawn, enemies = spawn_enemies(last_spawn, spawn_rate, enemy_tracker, enemies)
 
-        last_particle_time = particle(WIN, WIDTH, HEIGHT, particles, last_particle_time, particle_rate)
+        # Player death
+        if player.player_health <= 0:
+            print("You died. Game over!")
+            return
 
-        pygame.display.update()
         draw(fps_text)
+        last_particle_time = particle(WIN, WIDTH, HEIGHT, particles, last_particle_time, particle_rate)
+        pygame.display.update()
+
+def quit_game():
+    pygame.quit()
+    sys.exit()
 
 def menu():
-    WIN.blit(Location_1, (0,0))
-    WIN.blit(play_button, (250, 100))
-    WIN.blit(quit_button, (400, 100))
-    WIN.blit(help_button, (550, 100))
-    pygame.display.update()
+    while True:
+        clock.tick(fps)
+        WIN.blit(Location_1, (0,0))
+        WIN.blit(play_button, (250, 100))
+        WIN.blit(quit_button, (400, 100))
+        WIN.blit(help_button, (550, 100))
+        pygame.display.update()
 
-    run = True
-    while run:
         mouse_Pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:  # Use pygame.QUIT to check for the quit event
-                run = False
-                break
+                quit_game()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if help_rect.collidepoint(mouse_Pos):
                     help()
-                if play_rect.collidepoint(mouse_Pos):  # Check if the mouse is within the start button rect
+                elif play_rect.collidepoint(mouse_Pos):  # Check if the mouse is within the start button rect
                     main()
-                if quit_rect.collidepoint(mouse_Pos):  # Check if the mouse is within the exit button rect
-                    run = False
-                    break
-def help():
-    WIN.blit(Location_1, (0,0))
-    WIN.blit(insturction, (330, 50))
-    WIN.blit(back_button, (435, 370))
-    pygame.display.update()
+                elif quit_rect.collidepoint(mouse_Pos):  # Check if the mouse is within the exit button rect
+                    quit_game()
 
-    run = True
-    while run:
+def help():
+    while True:
+        clock.tick(fps)
+        WIN.blit(Location_1, (0,0))
+        WIN.blit(insturction, (330, 50))
+        WIN.blit(back_button, (435, 370))
+        pygame.display.update()
+
         mouse_Pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:  # Use pygame.QUIT to check for the quit event
-                run = False
-                break
+                quit_game()
         
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_rect.collidepoint(mouse_Pos):
-                    menu()
+                    return  # Back to the menu loop that opened this screen
 
 def shop():
     pass

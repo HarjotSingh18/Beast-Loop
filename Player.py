@@ -17,7 +17,7 @@ hit_sound.set_volume(0.1)
 death_sound = pygame.mixer.Sound("sound/death_sound.mp3")
 death_sound.set_volume(0.5)
 gun_sound = pygame.mixer.Sound("sound/Wizard_Sound.mp3")
-gun_sound.set_volume(15)
+gun_sound.set_volume(1.0)
 
 class Player(pygame.sprite.Sprite):
 
@@ -44,10 +44,11 @@ class Player(pygame.sprite.Sprite):
         self.hit_index = 0
         self.death_index = 0
 
-        self.player_health = 10
+        self.max_health = 10
+        self.player_health = self.max_health
         self.image = self.idle[self.idle_index]
         self.rect = self.image.get_rect(center = (x, y))
-        self.mask = pygame.mask.from_surface(img)
+        self.mask = pygame.mask.from_surface(self.idle[0])
         
         self.state = 'idle'
 
@@ -82,8 +83,8 @@ class Player(pygame.sprite.Sprite):
      
             self.hit_counter = 0
             self.hit_index += 1
-            bullet = PlayerBullet(staff_rect.x, staff_rect.y, mouse_x, mouse_y, self.damage * self.damage_multiplier)
             if self.hit_index == 7:
+                bullet = PlayerBullet(staff_rect.x, staff_rect.y, mouse_x, mouse_y, self.damage * self.damage_multiplier)
                 bullet_group.add(bullet)   
                 gun_sound.play()
             self.image = self.hit[self.hit_index]

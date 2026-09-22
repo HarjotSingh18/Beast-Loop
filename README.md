@@ -2,10 +2,13 @@
 
 A 2D wave-based defence game built with [Pygame](https://www.pygame.org/). You play a wizard standing at the left edge of a forest. Waves of monsters charge in from the right, and you blast them with magic bolts before they reach you. Each kill drops coins, and every wave is larger and spawns faster than the last, ending in a boss fight with an Orc.
 
+![Gameplay](Screenshots/gameplay.png)
+
 ---
 
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [How to Play](#how-to-play)
@@ -16,6 +19,22 @@ A 2D wave-based defence game built with [Pygame](https://www.pygame.org/). You p
 - [Tweaking the Game](#tweaking-the-game)
 - [Known Issues and Limitations](#known-issues-and-limitations)
 - [Roadmap](#roadmap)
+
+---
+
+## Screenshots
+
+| Main menu | Help screen |
+| --- | --- |
+| ![Main menu](Screenshots/main-menu.png) | ![Help screen](Screenshots/help-screen.png) |
+
+| A wave of mushrooms and boars | Dragons swooping in |
+| --- | --- |
+| ![Mushroom horde](Screenshots/mushroom-horde.png) | ![Dragon wave](Screenshots/dragon-wave.png) |
+
+| Orc boss fight |
+| --- |
+| ![Orc boss](Screenshots/orc-boss.png) |
 
 ---
 
@@ -80,9 +99,10 @@ python3 BeastLoop.py
 - Casting has a **0.3 second cooldown**. The bolt fires partway through the wizard's casting animation, toward the cursor's position at that moment.
 - Your spells do **4 damage** each.
 - Defeated enemies drop coins that slowly fall to the ground. Hover over them to collect them.
+- If your health reaches 0, the run ends and you return to the main menu.
 - Survive all the waves and defeat the Orc boss to finish the run. You are then returned to the main menu.
 
-The **health bar** and **coin counter** are shown in the top-left of the screen, along with an FPS counter.
+The **coin counter** and an FPS counter are shown in the top-left of the screen. The **health bar** sits just above the wizard.
 
 ---
 
@@ -146,18 +166,19 @@ After the boss wave, `get_enemy_set()` returns no enemies, and the game ends and
 ### Game flow
 
 ```
-menu() ──Play──▶ main() ──all waves cleared──▶ menu()
+menu() ──Play──▶ main() ──player dies / all waves cleared──▶ returns to menu()
    │
-   └──Help──▶ help() ──Back──▶ menu()
+   └──Help──▶ help() ──Back──▶ returns to menu()
 ```
 
-- **`menu()`** draws the title screen and waits for a button click.
+- **`menu()`** is the one long-running loop. It draws the title screen and waits for a click. `main()` and `help()` return to it when they finish. Closing the window or clicking Quit calls `quit_game()`, which shuts down pygame and exits.
 - **`main()`** resets every sprite group, creates the `Player`, and runs the 60 FPS game loop:
   1. Handles input. A left click sets the player's state to `"hitting"`, which starts the cast animation.
   2. Runs the **wave system**. When the current enemy list is empty, it builds the next one.
   3. Calls **`spawn_enemies()`**, which adds one unspawned enemy to its sprite group every `spawn_rate` seconds and removes dead enemies from the wave list.
-  4. Updates the ambient particles.
+  4. Ends the run if the player's health has reached 0.
   5. Calls **`draw()`**, which renders the background, HUD, leaves, enemies, drops, bullets, smoke, and player.
+  6. Draws the ambient particles on top and updates the display once.
 
 ### Sprites and animation
 
@@ -200,23 +221,20 @@ Most balance values are plain constants that are easy to change:
 
 ## Known Issues and Limitations
 
-- **The player can't die.** Health drops and the health bar shrinks, but nothing happens at 0 health.
 - **The shop is not implemented.** `Shop.py` is empty and `shop()` in `BeastLoop.py` is a stub. The upgrade icons (power and health) are loaded, but `draw_upgrades()` is never called.
 - **There is only one run.** After the boss wave, the game returns to the menu. There is no endless mode or looping beyond wave 5 yet.
-- **Assets are reloaded every frame in some places.** For example, `draw_health_bar()` loads the health bar image every frame, and coin/leaf animation frames are loaded each time one spawns. Caching these would improve performance.
+- **There is no game-over screen.** Dying or winning sends you straight back to the main menu.
 - **Sounds are loaded twice.** `Player.py` and `Sounds.py` each load the same sounds.
 - **The project must be launched from its root directory** because assets use relative paths.
-- **Menu navigation is recursive.** `menu()`, `help()`, and `main()` call each other instead of returning, so the call stack grows each time you switch screens.
 
 ---
 
 ## Roadmap
 
-- [ ] Player death and a game-over screen
+- [ ] Game-over and victory screens
 - [ ] Coin shop between waves for damage and health upgrades
 - [ ] Endless "loop" mode with scaling waves after the boss
-- [ ] Use the unused bat and Orc attack animations
-- [ ] Cache loaded images and sounds
+- [ ] Use the unused bat and Orc attack animations, and the dragon's glide frames for its dive
 - [ ] Add a `requirements.txt` and a `.gitignore` for `__pycache__/`
 
 ---

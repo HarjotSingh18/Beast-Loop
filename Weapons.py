@@ -10,12 +10,12 @@ bullet_1 = pygame.transform.smoothscale(pygame.image.load("images/weapons/simple
 bullet_1_rect = staff.get_rect(topleft = [0,0])
 bullet_1_mask = pygame.mask.from_surface(bullet_1)
 BULLET_VEL = 2
+BULLET_1 = pygame.transform.smoothscale(pygame.image.load("images/weapons/Bullet_Wizzart_C.png"), (55, 55))
 
 class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y, damage):
         super().__init__()
         self.images = []
-        BULLET_1 = pygame.transform.smoothscale(pygame.image.load("images/weapons/Bullet_Wizzart_C.png"), (55, 55))
         self.images.append(BULLET_1)
         self.index = 0
         self.image = self.images[self.index]
@@ -34,5 +34,9 @@ class PlayerBullet(pygame.sprite.Sprite):
     def update(self):
         self.rect.x -= int(self.x_vel)
         self.rect.y -= int(self.y_vel)
+
+        # Remove bullets that have left the screen
+        if not self.rect.colliderect(pygame.display.get_surface().get_rect()):
+            self.kill()
 
 bullet_group = pygame.sprite.Group()

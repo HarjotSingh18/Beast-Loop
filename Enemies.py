@@ -10,8 +10,8 @@ mushroom_rect = mushroom.get_rect(topleft = [950, 460])
 mushroom_mask = pygame.mask.from_surface(mushroom)
 
 boar = pygame.transform.smoothscale(pygame.image.load("images/enemies/boar/run/run_1.png"), (80, 80))
-boar_rect = mushroom.get_rect(topleft = [950, 465])
-boar_mask = pygame.mask.from_surface(mushroom)
+boar_rect = boar.get_rect(topleft = [950, 465])
+boar_mask = pygame.mask.from_surface(boar)
 
 bat = pygame.transform.smoothscale(pygame.image.load("images/enemies/dragon/flying/fly_1.png"), (40,40))
 bat_rect = bat.get_rect(topleft = [950, 300])
@@ -25,6 +25,7 @@ orc_mask = pygame.mask.from_surface(orc_boss)
 coin_drop = pygame.transform.smoothscale(pygame.image.load("images/GUI/coins/coin_1.png"), (80, 80))
 coin_drop_rect = coin_drop.get_rect(topleft = [0,0])
 coin_drop_mask = pygame.mask.from_surface(coin_drop)
+coin_animation = [pygame.transform.scale(pygame.image.load(f"images/GUI/coins/coin_{i}.png"), (40, 40)) for i in range(1, 6)]
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -107,12 +108,12 @@ class Enemy(pygame.sprite.Sprite):
         if self.state == "dead" and (not self.death or self.death_index >= len(self.death) - 1):
             self.kill()  # Remove the enemy sprite
                 
-        if PS_MASK.overlap(self.mask, (self.rect.x - PS_RECT.x, self.rect.y - PS_RECT.y)) and self.state != "dead":
+        if player.mask.overlap(self.mask, (self.rect.x - player.rect.x, self.rect.y - player.rect.y)) and self.state != "dead":
             hit_sound.play()
-            player.player_health -= 5  # Access the player's health
+            player.player_health = max(player.player_health - 5, 0)  # Access the player's health
             self.health = 0
             self.kill()
-            player.health_bar_width = player.health_bar_width * (player.player_health / 10)
+            player.health_bar_width = player.health_max_width * (player.player_health / player.max_health)
 
         for bullet in bullet_group:
             bullet_mask = bullet.mask  # Access the mask of the current bullet
@@ -125,8 +126,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.health <= 0:
                     death_sound.play()
                     self.state = "dead"
-                    coin_animaton = [pygame.transform.scale(pygame.image.load(f"images/GUI/coins/coin_{i}.png"), (40, 40)) for i in range(1, 6)]
-                    drop = EnemyDrop(self.rect.x, self.rect.y, coin_animaton, self.coin_val)
+                    drop = EnemyDrop(self.rect.x, self.rect.y, coin_animation, self.coin_val)
                     drop_group.add(drop)
                 else:
                     hit_sound.play()
@@ -136,8 +136,7 @@ class Mushroom(Enemy):
     def __init__(self, x, y, health):
         run_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/run/run_{i}.png"), (70, 70)) for i in range(1, 9)]
         hit_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/hit/hit_{i}.png"), (70, 70)) for i in range(1, 5)]
-        #! using death animation for the dragon because it looks nicer
-        death_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/death/die_{i}.png"), (70,70)) for i in range(1,6)]
+        death_animation = [pygame.transform.scale(pygame.image.load(f"images/enemies/mushroom/death/die_{i}.png"), (70,70)) for i in range(1,12)]
         self.coin_drop = 1
         super().__init__(x, y, health, run_animation, hit_animation, death_animation, None, 2, self.coin_drop)
 
